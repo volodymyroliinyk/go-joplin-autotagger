@@ -13,7 +13,7 @@
 
 Security: Does not create new tags and notes, only adds existing tags to notes.
 
-## Встановлення та налаштування
+## Installation and configuration
 
 1. Setting up the Joplin API
    - Before running the script, you must activate the Joplin Web Clipper API and obtain your token:
@@ -39,7 +39,7 @@ Security: Does not create new tags and notes, only adds existing tags to notes.
    - Run the script: \
    ```go run joplin_tagger.go```
 
-## Логування для налагодження (Debug Logging)
+## Login for debugging (Debug Logging)
 
 - The script contains detailed log.Printf messages that show the progress:
 - Start of processing each note and its processed body (fragment).
