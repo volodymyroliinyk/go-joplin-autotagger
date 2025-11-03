@@ -13,7 +13,7 @@ import (
 
 // TODO:[1] few more manual tests.
 // TODO:[1]: create github repo open source.
-// TODO:[1]: crontab job OR run on start of laptop af JoplinDesktop already run.
+// TODO:[1]: run on start of laptop af JoplinDesktop already run. https://gemini.google.com/app/fc2ff7e67b8324e
 
 // JOPLIN API CONFIGURATION
 const (
