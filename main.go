@@ -240,7 +240,7 @@ func main() {
 
         // Additional processing: Create a "cleaned" note body for WHOLE WORD searches.
         // This fixes an issue with punctuation (periods, commas, etc.) that interferes with searching.
-        // 1. We replace line breaks and common punctuation marks with spaces.
+        // 1. Replace line breaks and common punctuation marks with spaces.
         processedNoteBody := strings.ReplaceAll(noteBodyLower, "\n", " ")
         for _, punc := range []string{",", ".", ";", ":", "!", "?", "(", ")", "[", "]", "{", "}", "-", "/", "_", "`", "~", "*", "\\"} {
             processedNoteBody = strings.ReplaceAll(processedNoteBody, punc, " ")
@@ -266,10 +266,10 @@ func main() {
             // log.Printf(" [DEBUG] Checking tag: '%s'. Words in tag: %d. (ID: %s)", tag.Title, len(tagWords), tag.ID)
             if len(tagWords) > 1 {
                 // log.Printf(" [DEBUG] Lots of words ")
-                // Complex tag: We look for AT LEAST ONE word from the tag as a WHOLE WORD in the text of the note.
+                // Complex tag: Look for AT LEAST ONE word from the tag as a WHOLE WORD in the text of the note.
                 for _, word := range tagWords {
                     // log.Printf(" [DEBUG] Word %s", word)
-                    // We create a search template that guarantees word limits: "word"
+                    // Create a search template that guarantees word limits: "word"
                     searchWord1 := " " + word + " "
 
                     if len(searchWord1) > 2 && strings.Contains(processedNoteBody, searchWord1) {
@@ -281,8 +281,8 @@ func main() {
             } else {
                 // log.Printf("   [DEBUG] One word ")
                 // log.Printf("   [DEBUG] Word %s", tagTitleLower)
-                // Simple tag (one word): We look for the full tag name as a WHOLE WORD in the text of the note.
-                // We create a search template that guarantees word boundaries: "tag"
+                // Simple tag (one word): Look for the full tag name as a WHOLE WORD in the text of the note.
+                // Create a search template that guarantees word boundaries: "tag"
                 searchTagTitle1 := " " + tagTitleLower + " "
 
                 if len(searchTagTitle1) > 2 && strings.Contains(processedNoteBody, searchTagTitle1) {
