@@ -1,6 +1,11 @@
+# go-joplin-autotagger
+
+---
+
 # Joplin Auto Tagger (Golang)
 
-- This is a simple Go script that automatically tags your notes in Joplin by analyzing the content of the note body and comparing it to existing tag names.
+- This is a simple Go script that automatically tags your notes in [Joplin](https://joplinapp.org/) by analyzing the
+  content of the note body and comparing it to existing tag names.
 - The script uses the Joplin Web Clipper API and is designed to provide consistent tagging of large collections of notes.
 
 ## Basic capabilities
