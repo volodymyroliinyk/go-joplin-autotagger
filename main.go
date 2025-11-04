@@ -11,7 +11,6 @@ import (
     "time"
 )
 
-// TODO:[1] Є конфлікт з плагіном go-joplin-autotagger-by-notebook-title. тут потрібно впровадити ігнор тегів з суфіксом notebook.
 // TODO:[1] unit testing.
 // TODO:[1]: run on laptop start after Joplin Desktop. https://gemini.google.com/app/fc2ff7e67b8324e
 
