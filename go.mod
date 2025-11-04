@@ -1,3 +1,3 @@
-module go-joplin-autotagger
+module main
 
 go 1.25

@@ -23,7 +23,7 @@ Security: Does not create new tags and notes, only adds existing tags to notes.
      - Copy the Authorization token from there.
      - Make sure Joplin Desktop is running when you run the script.
 2. Go script configuration
-   - Open the joplin_tagger.go file and replace the stub with your real token:
+    - Open the main.go file and replace the stub with your real token:
     ```
     // JOPLIN API CONFIGURATION
     const (
@@ -34,10 +34,10 @@ Security: Does not create new tags and notes, only adds existing tags to notes.
     ```
 3. Launch
    - Make sure you have Go (Golang) installed.
-   - Save the file as joplin_tagger.go.
+   - Save the file as main.go.
    - Open a terminal in the directory with the file.
    - Run the script: \
-   ```go run joplin_tagger.go```
+     ```go run main.go```
 
 ## Login for debugging (Debug Logging)
 
