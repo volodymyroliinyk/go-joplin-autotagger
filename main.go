@@ -11,9 +11,8 @@ import (
     "time"
 )
 
-// TODO:[1] few more manual tests.
-// TODO:[1]: create github repo open source.
-// TODO:[1]: run on start of laptop af JoplinDesktop already run. https://gemini.google.com/app/fc2ff7e67b8324e
+// TODO:[1] unit testing.
+// TODO:[1]: run on laptop start after Joplin Desktop. https://gemini.google.com/app/fc2ff7e67b8324e
 
 // JOPLIN API CONFIGURATION
 const (
