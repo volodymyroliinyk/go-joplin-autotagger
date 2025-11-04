@@ -11,14 +11,18 @@ import (
     "time"
 )
 
+// TODO:[1] Є конфлікт з плагіном go-joplin-autotagger-by-notebook-title. тут потрібно впровадити ігнор тегів з суфіксом notebook.
 // TODO:[1] unit testing.
 // TODO:[1]: run on laptop start after Joplin Desktop. https://gemini.google.com/app/fc2ff7e67b8324e
 
 // JOPLIN API CONFIGURATION
 const (
     JOPLIN_API_BASE = "http://localhost:41184"
-    JOPLIN_TOKEN    = "YOUR_JOPLIN_API_TOKEN"
+    JOPLIN_TOKEN    = "99bcbacc078b509e6a609fe7e9340d44cd115cbd5467129d2fea69380c4547f1389da9d0d7d66b06716398452379187151d6a99b0f97329de34c0bbddbb2e014"
 )
+
+// PREFIX FOR ALL TAGS CREATED BASED ON NOTEBOOK NAMES
+const TAG_PREFIX = "notebook." // For ignoring
 
 // Structures for parsing API responses
 type Tag struct {
@@ -251,6 +255,11 @@ func main() {
         tagsAddedToNote := 0
 
         for _, tag := range allTags {
+            if strings.HasPrefix(tag.Title, TAG_PREFIX) {
+                // Ignoring tags based on notebook title provided by go-joplin-autotagger-by-notebook-title script.
+                continue
+            }
+
             // Check 1: Is a tag already attached to this note?
             if existingTagIDs[tag.ID] {
                 // log.Printf(" [DEBUG] Tag '%s' (ID: %s) is already attached, skip.", tag.Title, tag.ID)
