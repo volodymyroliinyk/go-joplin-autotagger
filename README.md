@@ -4,9 +4,11 @@
 
 # Joplin Auto Tagger (Golang)
 
-- This is a simple Go script that automatically tags your notes in [Joplin](https://joplinapp.org/) by analyzing the
+- This is a simple [Go](https://go.dev/) script that automatically tags your notes in [Joplin](https://joplinapp.org/)
+  by analyzing the
   content of the note body and comparing it to existing tag names.
-- The script uses the Joplin Web Clipper API and is designed to provide consistent tagging of large collections of notes.
+- The script uses the [Joplin Web Clipper](https://joplinapp.org/help/apps/clipper/) API and is designed to provide
+  consistent tagging of large collections of notes.
 
 ## Basic capabilities
 
@@ -21,8 +23,9 @@ Security: Does not create new tags and notes, only adds existing tags to notes.
 ## Installation and configuration
 
 1. Setting up the Joplin API
-   - Before running the script, you must activate the Joplin Web Clipper API and obtain your token:
-     - Open the Joplin Desktop application.
+    - Before running the script, you must activate the [Joplin Web Clipper](https://joplinapp.org/help/apps/clipper/)
+      API and obtain your token:
+        - Open the [Joplin Desktop](https://joplinapp.org/help/install/#desktop-applications) application.
      - Go to Tools -> Options -> Web Clipper.
      - Enable the "Enable Web Clipper Service" option.
      - Copy the Authorization token from there.
