@@ -45,7 +45,11 @@ Security: Does not create new tags and notes, only adds existing tags to notes.
    - Save the file as main.go.
    - Open a terminal in the directory with the file.
    - Run the script: \
-     ```go run main.go```
+     ```
+     ```bash
+     export JOPLIN_TOKEN="your-joplin-token";
+     go run main.go
+     ```
 
 ## Login for debugging (Debug Logging)
 
