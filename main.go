@@ -227,7 +227,7 @@ func main() {
 
     for i, note := range allNotes {
         // DEBUG LOG: Starting note processing
-        log.Printf("--- Note processing %d/%d: (ID: %s) ---", i+1, len(allNotes), note.ID)
+        // log.Printf("--- Note processing %d/%d: (ID: %s) ---", i+1, len(allNotes), note.ID)
         // log.Printf("--- note %v", note)
         // Get the current tags of the note to check if the tag is already attached
         existingTagIDs, err := getNoteTags(note.ID, token)
@@ -318,7 +318,7 @@ func main() {
 
         if tagsAddedToNote == 0 {
             // Add logging to confirm that the note is fully processed without changes
-            log.Printf("--- Note '%s': Processing completed. No new tags have been added. ---\n", note.ID)
+            // log.Printf("--- Note '%s': Processing completed. No new tags have been added. ---\n", note.ID)
         }
     }
 
