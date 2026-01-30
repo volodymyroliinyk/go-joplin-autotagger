@@ -1,0 +1,6 @@
+go-joplin-autotagger/
+├── LICENSE
+├── README.md
+├── go.mod
+├── hidden.md
+└── main.go
