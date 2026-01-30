@@ -1,64 +1,75 @@
 # go-joplin-autotagger
 
----
+A [Go](https://go.dev/) script to automatically tag notes in [Joplin](https://joplinapp.org/) based on their content. It
+analyzes the text of each note and adds tags whose names match the words in the text.
 
-# Joplin Auto Tagger (Golang)
+## Main features
 
-- This is a simple [Go](https://go.dev/) script that automatically tags your notes in [Joplin](https://joplinapp.org/)
-  by analyzing the
-  content of the note body and comparing it to existing tag names.
-- The script uses the [Joplin Web Clipper](https://joplinapp.org/help/apps/clipper/) API and is designed to provide
-  consistent tagging of large collections of notes.
+- **Full collection handling**: Uses pagination to load all notes and tags, regardless of their number.
+- **"Smart" search**: Guarantees a match for whole words only, ignoring case and punctuation.
+- **Support for complex tags**:
+    - **Simple tag** (one word): added if an exact match is found in the text.
+    - **Complex tag** (multiple words): added if at least one word from the tag name is found in the text.
+- **Ignore Notebooks**: Ability to exclude notes from certain notebooks by specifying their names in the
+  `ignored_notebooks.txt` file.
+- **Security**: The script does not create new tags, but only adds existing ones to the notes.
 
-## Basic capabilities
+## Requirements
 
-- Complete handling of collections: Uses pagination to correctly load all notes and tags, regardless of their number (more than 100).
-- Smart Search: Performs a case-insensitive search, ignoring punctuation and guaranteeing matches only for whole words. This prevents mistakes like tagging "a5" inside a "b7a5c4..." hash.
-- Support for complex tags:
-  - Simple tag (one word): Added if the full tag name is found as a whole word.
-  - Complex tag (multiple words, such as "Machine Learning"): Added if at least one word in the tag name is found as a whole word in the note text.
-
-Security: Does not create new tags and notes, only adds existing tags to notes.
+- [Joplin Desktop](https://joplinapp.org/help/install/#desktop-applications) installed.
+- Installed [Go](https://go.dev/).
 
 ## Installation and configuration
 
-1. Setting up the Joplin API
-    - Before running the script, you must activate the [Joplin Web Clipper](https://joplinapp.org/help/apps/clipper/)
-      API and obtain your token:
-        - Open the [Joplin Desktop](https://joplinapp.org/help/install/#desktop-applications) application.
-     - Go to Tools -> Options -> Web Clipper.
-     - Enable the "Enable Web Clipper Service" option.
-     - Copy the Authorization token from there.
-     - Make sure Joplin Desktop is running when you run the script.
-2. Go script configuration
-    - Open the main.go file and replace the stub with your real token:
-    ```
-    // JOPLIN API CONFIGURATION
-    const (
-        JOPLIN_API_BASE = "http://localhost:41184"
-        // !!! REPLACE THIS TOKEN WITH YOUR REAL JOPLIN API TOKEN !!!
-        JOPLIN_TOKEN = "YOUR_COPIED_API_TOKEN" 
-    )
-    ```
-3. Launch
-   - Make sure you have Go (Golang) installed.
-   - Save the file as main.go.
-   - Open a terminal in the directory with the file.
-   - Run the script: \
-     ```
-     ```bash
-     export JOPLIN_TOKEN="your-joplin-token";
-     go run main.go
-     ```
+#### 1. Enable the Joplin API
 
-## Login for debugging (Debug Logging)
+Before running the script, you need to activate Joplin Web Clipper and get an access token.
 
-- The script contains detailed log.Printf messages that show the progress:
-- Start of processing each note and its processed body (fragment).
-- Tags that are already attached (and skipped).
-- The exact word that was found in the text that caused the tag to be attached.
-- Tags that were not found (are ignored).
-- Use these messages to confirm that the tagging logic is working correctly for specific notes and tags.
+1. Open the Joplin desktop application.
+2. Go to `Tools` -> `Settings` -> `Web Clipper` (`Tools` -> `Options` -> `Web Clipper`).
+3. Enable the ``Enable Web Clipper Service'' option.
+4. Copy your **authorization token**.
 
-TODO:
- - unit testing
+**Important:** Joplin must be running while the script is running.
+
+#### 2. Configure the access token
+
+For security, it is recommended to pass the token via an environment variable rather than storing it in the source code.
+
+**For Linux / macOS:**
+
+```bash
+export JOPLIN_TOKEN="YOUR_COPIED_TOKEN"
+```
+
+**For Windows (Command Prompt):**
+
+```bash
+set JOPLIN_TOKEN="YOUR_COPIED_TOKEN"
+```
+
+#### 3. Configure ignored notebooks (optional)
+
+To exclude notes from specific notebooks, create an `ignored_notebooks.txt` file in the same directory as the script and
+add the notebook names to it, each on a new line.
+
+*Example `ignored_notebooks.txt`:*
+
+```
+# Notes from these notebooks will not be processed
+personal
+Work/Projects
+```
+
+## Launching
+
+Make sure you are in the project directory and set the `JOPLIN_TOKEN` environment variable.
+
+```bash
+go run main.go
+```
+
+## Debugging
+
+``log.Printf`' calls are commented out in the `main.go` code. If you need to see in detail how each note is processed,
+which tags are there and why, you can uncomment these lines.
