@@ -1,6 +1,7 @@
 package main
 
 import (
+    "bufio"
     "bytes"
     "encoding/json"
     "fmt"
@@ -15,7 +16,8 @@ import (
 // TODO:[1] unit testing.
 // JOPLIN API CONFIGURATION
 const (
-    JOPLIN_API_BASE = "http://localhost:41184"
+    JOPLIN_API_BASE        = "http://localhost:41184"
+    IGNORED_NOTEBOOKS_FILE = "ignored_notebooks.txt"
 )
 
 // PREFIX FOR ALL TAGS CREATED BASED ON NOTEBOOK NAMES
@@ -28,9 +30,15 @@ type Tag struct {
 }
 
 type Note struct {
+    ID       string `json:"id"`
+    Title    string `json:"title"`
+    Body     string `json:"body"`
+    ParentID string `json:"parent_id"`
+}
+
+type Notebook struct {
     ID    string `json:"id"`
     Title string `json:"title"`
-    Body  string `json:"body"`
 }
 
 type CollectionResponse struct {
@@ -75,7 +83,7 @@ func getAllNotes(token string) ([]Note, error) {
 
     for {
         // Add the page parameter to the request
-        endpoint := fmt.Sprintf("/notes?page=%d&fields=id,title,body", page) // Explicitly asking for body
+        endpoint := fmt.Sprintf("/notes?page=%d&fields=id,title,body,parent_id", page) // Explicitly asking for body and parent_id
         body, err := fetchData(endpoint, token)
         if err != nil {
             return nil, err
@@ -203,10 +211,83 @@ func associateTag(noteID, tagID string, token string) error {
     return nil
 }
 
+// getAllNotebooks fetches all notebooks and returns a map of their IDs to titles.
+func getAllNotebooks(token string) (map[string]string, error) {
+    fmt.Println("-> Getting all notebooks...")
+    notebooksMap := make(map[string]string)
+    page := 1
+
+    for {
+        endpoint := fmt.Sprintf("/folders?page=%d", page)
+        body, err := fetchData(endpoint, token)
+        if err != nil {
+            return nil, err
+        }
+
+        var response CollectionResponse
+        if err := json.Unmarshal(body, &response); err != nil {
+            return nil, fmt.Errorf("notebook parsing error on page %d: %w", page, err)
+        }
+
+        if len(response.Items) == 0 {
+            break // Last page reached
+        }
+
+        for _, rawItem := range response.Items {
+            var notebook Notebook
+            if err := json.Unmarshal(rawItem, &notebook); err != nil {
+                log.Printf("Error parsing notebook: %v", err)
+                continue
+            }
+            notebooksMap[notebook.ID] = notebook.Title
+        }
+
+        page++
+    }
+
+    fmt.Printf("   Found %d notebooks.\n", len(notebooksMap))
+    return notebooksMap, nil
+}
+
+// loadIgnoredNotebooks reads a list of notebook names from a file.
+func loadIgnoredNotebooks(filename string) (map[string]bool, error) {
+    ignored := make(map[string]bool)
+    file, err := os.Open(filename)
+    if err != nil {
+        if os.IsNotExist(err) {
+            log.Printf("Warning: Ignored notebooks file not found at '%s'. No notebooks will be ignored.", filename)
+            return ignored, nil
+        }
+        return nil, fmt.Errorf("error opening ignored notebooks file: %w", err)
+    }
+    defer file.Close()
+
+    scanner := bufio.NewScanner(file)
+    for scanner.Scan() {
+        notebookName := strings.TrimSpace(scanner.Text())
+        if notebookName != "" {
+            ignored[notebookName] = true
+        }
+    }
+
+    if err := scanner.Err(); err != nil {
+        return nil, fmt.Errorf("error reading ignored notebooks file: %w", err)
+    }
+
+    fmt.Printf("   Loaded %d notebook(s) to ignore.\n", len(ignored))
+    return ignored, nil
+}
+
 func main() {
     token := os.Getenv("JOPLIN_TOKEN")
     if token == "" {
         log.Fatal("ERROR: Environment variable JOPLIN_TOKEN is not set or empty.")
+    }
+
+    // 0. Load ignored notebooks
+    ignoredNotebooks, err := loadIgnoredNotebooks(IGNORED_NOTEBOOKS_FILE)
+    if err != nil {
+        log.Fatalf("Critical error: %v", err)
     }
 
     // 1. Get all tags
@@ -215,17 +296,30 @@ func main() {
         log.Fatalf("Critical error: %v", err)
     }
 
-    // 2. Getting all notes
+    // 2. Get all notebooks (folders)
+    allNotebooks, err := getAllNotebooks(token)
+    if err != nil {
+        log.Fatalf("Critical error: %v", err)
+    }
+
+    // 3. Getting all notes
     allNotes, err := getAllNotes(token)
     if err != nil {
         log.Fatalf("Critical error: %v", err)
     }
 
-    // 3. Basic logic of sorting and attaching tags
+    // 4. Basic logic of sorting and attaching tags
     fmt.Println("\n-> Start automatically tagging notes...")
     totalTagsAdded := 0
 
     for i, note := range allNotes {
+        // Check if the note's notebook is in the ignore list
+        notebookTitle, exists := allNotebooks[note.ParentID]
+        if exists && ignoredNotebooks[notebookTitle] {
+            log.Printf("[Skip note %d/%d '%s']: Notebook '%s' is in the ignore list.", i+1, len(allNotes), note.Title, notebookTitle)
+            continue
+        }
+
         // DEBUG LOG: Starting note processing
         // log.Printf("--- Note processing %d/%d: (ID: %s) ---", i+1, len(allNotes), note.ID)
         // log.Printf("--- note %v", note)

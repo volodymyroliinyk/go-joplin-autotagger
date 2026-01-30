@@ -1,0 +1,4 @@
+# Add notebook names to ignore here, one per line
+# Example:
+# Personal
+# Work/Projects
